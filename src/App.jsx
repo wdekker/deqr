@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
-import { Download, QrCode, ChevronDown, ChevronUp, Palette } from 'lucide-react';
+import { Download, QrCode, ChevronDown, ChevronUp } from 'lucide-react';
 
 function App() {
   const [inputValue, setInputValue] = useState('');
@@ -35,9 +35,12 @@ function App() {
   // Trigger brief pop animation when input changes
   useEffect(() => {
     if (inputValue) {
-      setPop(true);
-      const timer = setTimeout(() => setPop(false), 300);
-      return () => clearTimeout(timer);
+      const startTimer = setTimeout(() => setPop(true), 10);
+      const endTimer = setTimeout(() => setPop(false), 310);
+      return () => {
+        clearTimeout(startTimer);
+        clearTimeout(endTimer);
+      };
     }
   }, [inputValue]);
 
