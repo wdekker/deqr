@@ -14,3 +14,6 @@
 - Native `.png` download feature extracting directly from the generated canvas element.
 - Fully local execution; no payloads sent to a server.
 - Dynamic color styling (advanced options toggle).
+
+## Development Rules
+- **Pre-commit Checks**: Always verify code changes locally by running `yarn lint` and `yarn test` before committing and pushing to the remote repository to ensure the CI/CD pipeline remains green.
