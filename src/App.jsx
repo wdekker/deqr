@@ -1,6 +1,34 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, Component } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { Download, QrCode, ChevronDown, ChevronUp } from 'lucide-react';
+
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.resetDependency !== this.props.resetDependency && this.state.hasError) {
+      this.setState({ hasError: false });
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="empty-state">
+          <p style={{ color: '#ef4444', fontSize: '0.9rem', padding: '1rem' }}>⚠️ Data too large or complex for a QR code.</p>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 function App() {
   const [inputValue, setInputValue] = useState('');
@@ -11,6 +39,13 @@ function App() {
   
   const qrRef = useRef(null);
   const MAX_CHARS = 2000;
+
+  const getQRLevel = (length) => {
+    if (length > 1600) return 'L';
+    if (length > 1000) return 'M';
+    if (length > 500) return 'Q';
+    return 'H';
+  };
 
   // Safely trigger GoatCounter custom events
   const trackEvent = (path, title) => {
@@ -75,7 +110,7 @@ function App() {
             <textarea
               id="qr-input"
               value={inputValue}
-              onChange={(e) => setInputValue(e.target.value.trimStart())}
+              onChange={(e) => setInputValue(e.target.value.trimStart().slice(0, MAX_CHARS))}
               placeholder="e.g. https://example.com"
               autoComplete="off"
               spellCheck="false"
@@ -125,14 +160,16 @@ function App() {
         <div className="qr-display-container">
           {inputValue ? (
             <div className={`qr-code-wrapper ${pop ? 'animate-pop' : ''}`} ref={qrRef} style={{ background: bgColor }}>
-              <QRCodeCanvas
-                value={inputValue}
-                size={200}
-                fgColor={fgColor}
-                bgColor={bgColor}
-                level="H"
-                includeMargin={false}
-              />
+              <ErrorBoundary resetDependency={inputValue}>
+                <QRCodeCanvas
+                  value={inputValue}
+                  size={200}
+                  fgColor={fgColor}
+                  bgColor={bgColor}
+                  level={getQRLevel(inputValue.length)}
+                  includeMargin={false}
+                />
+              </ErrorBoundary>
             </div>
           ) : (
             <div className="empty-state">
