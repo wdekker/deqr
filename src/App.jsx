@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, Component } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { Download, QrCode, ChevronDown, ChevronUp } from 'lucide-react';
 
+/* eslint-disable react/prop-types */
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
