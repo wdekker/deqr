@@ -17,3 +17,7 @@
 
 ## Development Rules
 - **Pre-commit Checks**: Always verify code changes locally by running `yarn lint` and `yarn test` before committing and pushing to the remote repository to ensure the CI/CD pipeline remains green.
+
+## Security & Privacy
+- **Content Security Policy (CSP)**: Strict `<meta>` CSP implemented to block all unauthorized outgoing network requests, mathematically guaranteeing data cannot be exfiltrated.
+- **CI Security Audits**: Pipeline runs `yarn npm audit --environment production` to automatically block deployments if a CVE vulnerability is detected in dependencies.

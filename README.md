@@ -9,6 +9,10 @@ Features native download capability, deep custom color support, glassmorphism UI
 - **Customizable:** Complete foreground and background color control.
 - **Sleek Aesthetics:** Dark-mode default, animated glass UI.
 
+## Security & Privacy Guarantees
+- **No Exfiltration**: A strict Content Security Policy (CSP) actively prevents the browser from making unauthorized outbound network requests.
+- **Supply Chain Security**: Automated `yarn npm audit` checks in the CI/CD pipeline block deployments if any production dependency has a known CVE vulnerability.
+
 ## Local Development
 
 ```bash
