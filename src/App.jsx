@@ -99,12 +99,12 @@ function App() {
 
   return (
     <div className="app-container">
-      <div className="header">
+      <header className="header">
         <h1>DeQR</h1>
         <p>Free. Open-Source. Ad-Free. Privacy-First. No Signups.</p>
-      </div>
+      </header>
 
-      <div className="glass-card">
+      <main className="glass-card">
         <div className="input-group">
           <label htmlFor="qr-input">Data URL or Text</label>
           <div className="input-with-counter">
@@ -188,13 +188,13 @@ function App() {
           <Download size={20} />
           Save image
         </button>
-      </div>
+      </main>
 
-      <div className="footer-links">
+      <footer className="footer-links">
         <a href="https://github.com/wdekker/deqr" target="_blank" rel="noopener noreferrer">Open Source on GitHub</a>
         <span className="dot">•</span>
         <a href="https://www.dekker.dev/contact/" target="_blank" rel="noopener noreferrer">Contact</a>
-      </div>
+      </footer>
     </div>
   );
 }
