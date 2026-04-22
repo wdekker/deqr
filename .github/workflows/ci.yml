@@ -24,6 +24,8 @@ jobs:
       run: corepack enable
     - name: Install dependencies
       run: yarn install
+    - name: Run Security Audit
+      run: yarn npm audit --environment production
     - name: Run ESLint
       run: yarn lint
     - name: Run Tests
