@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, Component } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
-import { Download, QrCode, ChevronDown, ChevronUp } from 'lucide-react';
+import { Download, Share2, QrCode, ChevronDown, ChevronUp } from 'lucide-react';
 
 /* eslint-disable react/prop-types */
 class ErrorBoundary extends Component {
@@ -37,7 +37,18 @@ function App() {
   const [fgColor, setFgColor] = useState('#000000');
   const [bgColor, setBgColor] = useState('#ffffff');
   const [pop, setPop] = useState(false);
-  
+  const [canShare] = useState(() => {
+    if (typeof navigator !== 'undefined' && navigator.canShare) {
+      try {
+        const testFile = new File([''], 'test.png', { type: 'image/png' });
+        return navigator.canShare({ files: [testFile] });
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  });
+
   const qrRef = useRef(null);
   const MAX_CHARS = 2000;
 
@@ -80,21 +91,35 @@ function App() {
     }
   }, [inputValue]);
 
-  const handleDownload = () => {
-    trackEvent('download-qr', 'Downloaded QR Code');
-    
+  const handleDownloadOrShare = async () => {
     if (!qrRef.current) return;
     
     const canvas = qrRef.current.querySelector('canvas');
     if (!canvas) return;
 
-    // Create a temporary link element
-    const link = document.createElement('a');
-    link.download = `qrcode-${Date.now()}.png`;
-    link.href = canvas.toDataURL('image/png');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    if (canShare) {
+      trackEvent('share-qr', 'Shared QR Code');
+      canvas.toBlob(async (blob) => {
+        if (!blob) return;
+        const file = new File([blob], `qrcode-${Date.now()}.png`, { type: 'image/png' });
+        try {
+          await navigator.share({
+            title: 'DeQR Code',
+            files: [file]
+          });
+        } catch (err) {
+          console.log('User canceled share or an error occurred.', err);
+        }
+      }, 'image/png');
+    } else {
+      trackEvent('download-qr', 'Downloaded QR Code');
+      const link = document.createElement('a');
+      link.download = `qrcode-${Date.now()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
 
   return (
@@ -182,11 +207,14 @@ function App() {
 
         <button 
           className="btn btn-primary" 
-          onClick={handleDownload}
+          onClick={handleDownloadOrShare}
           disabled={!inputValue}
         >
-          <Download size={20} />
-          Save image
+          {canShare ? (
+            <><Share2 size={20} /> Share image</>
+          ) : (
+            <><Download size={20} /> Save image</>
+          )}
         </button>
       </main>
 
