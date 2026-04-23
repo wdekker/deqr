@@ -9,7 +9,7 @@ describe('QR Code Generator App', () => {
     expect(screen.getByText('Free. Open-Source. Ad-Free. Privacy-First. No Signups.')).toBeInTheDocument();
     expect(screen.getByText('Enter text to generate QR')).toBeInTheDocument();
     
-    const downloadBtn = screen.getByRole('button', { name: /save image/i });
+    const downloadBtn = screen.getByRole('button', { name: /save qr code/i });
     expect(downloadBtn).toBeDisabled();
   });
 
@@ -28,7 +28,7 @@ describe('QR Code Generator App', () => {
     expect(qrCanvas).toBeInTheDocument();
     
     // Download should be enabled
-    const downloadBtn = screen.getByRole('button', { name: /save image/i });
+    const downloadBtn = screen.getByRole('button', { name: /save qr code/i });
     expect(downloadBtn).not.toBeDisabled();
   });
 

@@ -48,6 +48,7 @@ function App() {
     }
     return false;
   });
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
 
   const qrRef = useRef(null);
   const MAX_CHARS = 2000;
@@ -90,6 +91,26 @@ function App() {
       };
     }
   }, [inputValue]);
+
+  // Capture PWA install prompt
+  useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstall = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setDeferredPrompt(null);
+      }
+    }
+  };
 
   const handleDownloadOrShare = async () => {
     if (!qrRef.current) return;
@@ -205,17 +226,30 @@ function App() {
           )}
         </div>
 
-        <button 
-          className="btn btn-primary" 
-          onClick={handleDownloadOrShare}
-          disabled={!inputValue}
-        >
-          {canShare ? (
-            <><Share2 size={20} /> Share image</>
-          ) : (
-            <><Download size={20} /> Save image</>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%' }}>
+          <button 
+            className="btn btn-primary" 
+            onClick={handleDownloadOrShare}
+            disabled={!inputValue}
+            style={{ width: '100%' }}
+          >
+            {canShare ? (
+              <><Share2 size={20} /> Share QR Code</>
+            ) : (
+              <><Download size={20} /> Save QR Code</>
+            )}
+          </button>
+          
+          {deferredPrompt && (
+            <button 
+              className="btn" 
+              onClick={handleInstall}
+              style={{ width: '100%', background: 'rgba(255, 255, 255, 0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)' }}
+            >
+              Install App
+            </button>
           )}
-        </button>
+        </div>
       </main>
 
       <footer className="footer-links">
