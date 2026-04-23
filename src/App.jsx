@@ -49,6 +49,13 @@ function App() {
     return false;
   });
   const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showIosPrompt, setShowIosPrompt] = useState(false);
+  const [isIosDevice] = useState(() => {
+    if (typeof window === 'undefined' || !window.navigator) return false;
+    const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+    const isStandalone = ('standalone' in window.navigator) && window.navigator.standalone;
+    return isIos && !isStandalone;
+  });
 
   const qrRef = useRef(null);
   const MAX_CHARS = 2000;
@@ -92,7 +99,7 @@ function App() {
     }
   }, [inputValue]);
 
-  // Capture PWA install prompt
+  // Capture PWA install prompt for Android/Desktop
   useEffect(() => {
     const handler = (e) => {
       e.preventDefault();
@@ -102,13 +109,15 @@ function App() {
     return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
 
-  const handleInstall = async () => {
+  const handleInstallClick = async () => {
     if (deferredPrompt) {
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
       if (outcome === 'accepted') {
         setDeferredPrompt(null);
       }
+    } else if (isIosDevice) {
+      setShowIosPrompt(true);
     }
   };
 
@@ -240,14 +249,20 @@ function App() {
             )}
           </button>
           
-          {deferredPrompt && (
+          {(deferredPrompt || isIosDevice) && (
             <button 
               className="btn" 
-              onClick={handleInstall}
+              onClick={handleInstallClick}
               style={{ width: '100%', background: 'rgba(255, 255, 255, 0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)' }}
             >
               Install App
             </button>
+          )}
+
+          {showIosPrompt && (
+            <div style={{ padding: '0.75rem', background: 'rgba(255,255,255,0.1)', borderRadius: '0.5rem', fontSize: '0.85rem', textAlign: 'center', color: '#e2e8f0', marginTop: '0.5rem' }}>
+              To install on iOS: Tap the <strong>Share</strong> button at the bottom of Safari, then select <strong>Add to Home Screen</strong>.
+            </div>
           )}
         </div>
       </main>
