@@ -3122,7 +3122,7 @@ __metadata:
     globals: "npm:^17.5.0"
     happy-dom: "npm:^20.9.0"
     jsdom: "npm:^29.0.2"
-    lucide-react: "npm:^0.300.0"
+    lucide-react: "npm:^1.14.0"
     prettier: "npm:^3.8.3"
     qrcode.react: "npm:^4.0.0"
     react: "npm:^19.2.5"
@@ -4730,12 +4730,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lucide-react@npm:^0.300.0":
-  version: 0.300.0
-  resolution: "lucide-react@npm:0.300.0"
+"lucide-react@npm:^1.14.0":
+  version: 1.14.0
+  resolution: "lucide-react@npm:1.14.0"
   peerDependencies:
-    react: ^16.5.1 || ^17.0.0 || ^18.0.0
-  checksum: 10c0/cd532ee6eca64662abd3850d8b2f9135a5c8ca239a0f7ab0d01cf743271e953aa2b3b6af2027d3eaefc33564eb2c4c51d4664865920c4b6adc332f4c59cebc74
+    react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10c0/25c5dd878945842ffb519532f1a66f59f2d461e7be7bd322091b0ecd3cd32561c1ae3d9b50161432d39a72bf8c8f1a039268f2f20a035e520dd3f49dd46ffaf2
   languageName: node
   linkType: hard
 
